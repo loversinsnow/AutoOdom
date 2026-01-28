@@ -1,0 +1,16 @@
+/home/dogogod/booster_robotics_sdk_ros2/install/booster_rtc_client/lib/booster_rtc_client/rtc_client_node
+/home/dogogod/booster_robotics_sdk_ros2/install/booster_rtc_client/share/ament_index/resource_index/package_run_dependencies/booster_rtc_client
+/home/dogogod/booster_robotics_sdk_ros2/install/booster_rtc_client/share/ament_index/resource_index/parent_prefix_path/booster_rtc_client
+/home/dogogod/booster_robotics_sdk_ros2/install/booster_rtc_client/share/booster_rtc_client/environment/ament_prefix_path.sh
+/home/dogogod/booster_robotics_sdk_ros2/install/booster_rtc_client/share/booster_rtc_client/environment/ament_prefix_path.dsv
+/home/dogogod/booster_robotics_sdk_ros2/install/booster_rtc_client/share/booster_rtc_client/environment/path.sh
+/home/dogogod/booster_robotics_sdk_ros2/install/booster_rtc_client/share/booster_rtc_client/environment/path.dsv
+/home/dogogod/booster_robotics_sdk_ros2/install/booster_rtc_client/share/booster_rtc_client/local_setup.bash
+/home/dogogod/booster_robotics_sdk_ros2/install/booster_rtc_client/share/booster_rtc_client/local_setup.sh
+/home/dogogod/booster_robotics_sdk_ros2/install/booster_rtc_client/share/booster_rtc_client/local_setup.zsh
+/home/dogogod/booster_robotics_sdk_ros2/install/booster_rtc_client/share/booster_rtc_client/local_setup.dsv
+/home/dogogod/booster_robotics_sdk_ros2/install/booster_rtc_client/share/booster_rtc_client/package.dsv
+/home/dogogod/booster_robotics_sdk_ros2/install/booster_rtc_client/share/ament_index/resource_index/packages/booster_rtc_client
+/home/dogogod/booster_robotics_sdk_ros2/install/booster_rtc_client/share/booster_rtc_client/cmake/booster_rtc_clientConfig.cmake
+/home/dogogod/booster_robotics_sdk_ros2/install/booster_rtc_client/share/booster_rtc_client/cmake/booster_rtc_clientConfig-version.cmake
+/home/dogogod/booster_robotics_sdk_ros2/install/booster_rtc_client/share/booster_rtc_client/package.xml

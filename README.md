@@ -1,7 +1,3 @@
-这份经过润色的 README 文档在保持原有技术细节和**所有代码命令完全不变**的基础上，优化了排版结构、语言通顺度以及阅读体验，使其更符合开源项目的标准规范。
-
----
-
 # AutoOdom 论文复现指南
 
 ## 🖥️ 系统要求
@@ -16,7 +12,7 @@
 请参考 [Isaac Lab 官方文档](https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/pip_installation.html) 安装 Python 版本的 Isaac Sim 和 Isaac Lab（Python version = 3.11）。
 3. **克隆 AutoOdom 仓库**
 ```bash
-git clone https://github.com/DOGOGOD/AutoOdom
+git clone https://github.com/DOGOGOD/AutoOdom.git
 ```
 
 

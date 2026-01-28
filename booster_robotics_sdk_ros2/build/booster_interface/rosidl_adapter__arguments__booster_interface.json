@@ -1,0 +1,26 @@
+{
+  "package_name": "booster_interface",
+  "non_idl_tuples": [
+    "/home/dogogod/booster_robotics_sdk_ros2/booster_ros2_interface:msg/BoosterApiReqMsg.msg",
+    "/home/dogogod/booster_robotics_sdk_ros2/booster_ros2_interface:msg/BoosterApiRespMsg.msg",
+    "/home/dogogod/booster_robotics_sdk_ros2/booster_ros2_interface:msg/ButtonEventMsg.msg",
+    "/home/dogogod/booster_robotics_sdk_ros2/booster_ros2_interface:msg/MotorState.msg",
+    "/home/dogogod/booster_robotics_sdk_ros2/booster_ros2_interface:msg/MotorCmd.msg",
+    "/home/dogogod/booster_robotics_sdk_ros2/booster_ros2_interface:msg/LowCmd.msg",
+    "/home/dogogod/booster_robotics_sdk_ros2/booster_ros2_interface:msg/ImuState.msg",
+    "/home/dogogod/booster_robotics_sdk_ros2/booster_ros2_interface:msg/LowState.msg",
+    "/home/dogogod/booster_robotics_sdk_ros2/booster_ros2_interface:msg/RawBytesMsg.msg",
+    "/home/dogogod/booster_robotics_sdk_ros2/booster_ros2_interface:msg/Odometer.msg",
+    "/home/dogogod/booster_robotics_sdk_ros2/booster_ros2_interface:msg/FallDownState.msg",
+    "/home/dogogod/booster_robotics_sdk_ros2/booster_ros2_interface:msg/RemoteControllerState.msg",
+    "/home/dogogod/booster_robotics_sdk_ros2/booster_ros2_interface:msg/HandCommand.msg",
+    "/home/dogogod/booster_robotics_sdk_ros2/booster_ros2_interface:msg/HandDdsMsg.msg",
+    "/home/dogogod/booster_robotics_sdk_ros2/booster_ros2_interface:msg/HandParam.msg",
+    "/home/dogogod/booster_robotics_sdk_ros2/booster_ros2_interface:msg/ProneBodyControlStatus.msg",
+    "/home/dogogod/booster_robotics_sdk_ros2/booster_ros2_interface:msg/RobotStatesMsg.msg",
+    "/home/dogogod/booster_robotics_sdk_ros2/booster_ros2_interface:msg/RobotReplayTrajID.msg",
+    "/home/dogogod/booster_robotics_sdk_ros2/booster_ros2_interface:msg/Subtitle.msg",
+    "/home/dogogod/booster_robotics_sdk_ros2/booster_ros2_interface:srv/RpcService.srv",
+    "/home/dogogod/booster_robotics_sdk_ros2/booster_ros2_interface:srv/AgentService.srv"
+  ]
+}

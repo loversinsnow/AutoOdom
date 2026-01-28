@@ -1,0 +1,233 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-cc3b763e5b64e3a3d22d.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17
+					]
+				},
+				{
+					"build" : "booster_interface__py",
+					"jsonFile" : "directory-booster_interface__py-9e46e51567a3d56a4b2f.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "/home/dogogod/booster_robotics_sdk_ros2/build/booster_interface/booster_interface__py",
+					"targetIndexes" : 
+					[
+						4
+					]
+				}
+			],
+			"name" : "",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1
+					],
+					"name" : "booster_interface",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_build_booster_interface_egg::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_build_booster_interface_egg-479ad82870489dfd8915.json",
+					"name" : "ament_cmake_python_build_booster_interface_egg",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_copy_booster_interface::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_copy_booster_interface-2c7e16ee2c189f4ba9f7.json",
+					"name" : "ament_cmake_python_copy_booster_interface",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "booster_interface::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-booster_interface-1f7dcd6583a662e392d1.json",
+					"name" : "booster_interface",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "booster_interface__cpp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-booster_interface__cpp-642d4e278ca98220cf5b.json",
+					"name" : "booster_interface__cpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "booster_interface__py::@3517d1aa6cd5a7c8e020",
+					"jsonFile" : "target-booster_interface__py-dd7c172b3f4da70f63e9.json",
+					"name" : "booster_interface__py",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "booster_interface__rosidl_generator_c::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-booster_interface__rosidl_generator_c-408541df255a38314aa3.json",
+					"name" : "booster_interface__rosidl_generator_c",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "booster_interface__rosidl_generator_py::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-booster_interface__rosidl_generator_py-e22c708c3be00b185132.json",
+					"name" : "booster_interface__rosidl_generator_py",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "booster_interface__rosidl_typesupport_c::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-booster_interface__rosidl_typesupport_c-c5ad4fa8a4415f4609a9.json",
+					"name" : "booster_interface__rosidl_typesupport_c",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "booster_interface__rosidl_typesupport_c__pyext::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-booster_interface__rosidl_typesupport_c__pyext-a8de18ebf58c71dde13b.json",
+					"name" : "booster_interface__rosidl_typesupport_c__pyext",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "booster_interface__rosidl_typesupport_cpp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-booster_interface__rosidl_typesupport_cpp-690614cd4c2ad7e1535b.json",
+					"name" : "booster_interface__rosidl_typesupport_cpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "booster_interface__rosidl_typesupport_fastrtps_c::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-booster_interface__rosidl_typesupport_fastrtps_c-e4549adca9077786384f.json",
+					"name" : "booster_interface__rosidl_typesupport_fastrtps_c",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "booster_interface__rosidl_typesupport_fastrtps_c__pyext::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-booster_interface__rosidl_typesupport_fastrtps_c__pyext-02ca9d8b326c4974d9e4.json",
+					"name" : "booster_interface__rosidl_typesupport_fastrtps_c__pyext",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "booster_interface__rosidl_typesupport_fastrtps_cpp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-booster_interface__rosidl_typesupport_fastrtps_cpp-38f8cb06ce1c9284f704.json",
+					"name" : "booster_interface__rosidl_typesupport_fastrtps_cpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "booster_interface__rosidl_typesupport_introspection_c::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-booster_interface__rosidl_typesupport_introspection_c-3e8bb2d510e496fc8950.json",
+					"name" : "booster_interface__rosidl_typesupport_introspection_c",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "booster_interface__rosidl_typesupport_introspection_c__pyext::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-booster_interface__rosidl_typesupport_introspection_c__pyext-8cee20f60e7aedbb3dff.json",
+					"name" : "booster_interface__rosidl_typesupport_introspection_c__pyext",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "booster_interface__rosidl_typesupport_introspection_cpp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-booster_interface__rosidl_typesupport_introspection_cpp-84227b13321729eab494.json",
+					"name" : "booster_interface__rosidl_typesupport_introspection_cpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "booster_interface_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-booster_interface_uninstall-047319ec348743312313.json",
+					"name" : "booster_interface_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-157cddbdfc2220a0a4f9.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/dogogod/booster_robotics_sdk_ros2/build/booster_interface",
+		"source" : "/home/dogogod/booster_robotics_sdk_ros2/booster_ros2_interface"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

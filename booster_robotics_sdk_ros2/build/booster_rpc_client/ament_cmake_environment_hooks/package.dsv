@@ -1,0 +1,4 @@
+source;share/booster_rpc_client/local_setup.bash
+source;share/booster_rpc_client/local_setup.dsv
+source;share/booster_rpc_client/local_setup.sh
+source;share/booster_rpc_client/local_setup.zsh
