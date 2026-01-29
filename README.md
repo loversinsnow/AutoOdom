@@ -118,7 +118,7 @@ colcon build
 #### 2. 收集运动数据
 
 **步骤 A：连接机器人**
-请通过有线方式连接 Booster T1 机器人，具体操作参考 [Booster T1 官方说明书](https://www.google.com/search?q=https://booster.feishu.cn/wiki/H2Dowdnokij7p8ks9K3cZPuJnOg)。
+请通过有线方式连接 Booster T1 机器人，具体操作参考 [Booster T1 官方说明书](https://booster.feishu.cn/wiki/H2Dowdnokij7p8ks9K3cZPuJnOg)。
 
 **步骤 B：运行收集程序**
 
