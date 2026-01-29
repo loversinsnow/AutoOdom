@@ -142,4 +142,11 @@ conda activate <your_env_name>
 python AutoOdom/robot_lab/BoosterT1AutoOdom/Stage1Check.py
 ```
 
-推理生成的轨迹对比图将保存在 `AutoOdom/robot_lab/BoosterT1AutoOdom` 文件夹中。
+推理生成的轨迹对比图将保存在 `AutoOdom/robot_lab/BoosterT1AutoOdom` 文件夹中。  
+
+---
+
+## 🏗️ 后续目标
+[] 收集足够样本量的数据
+[] 对真实环境运动数据展开自回归训练
+[] 调整模型训练参数，提升模型的泛化能力和推理准确度
