@@ -1,4 +1,4 @@
-# AutoOdom 论文复现指南
+# AutoOdom 论文复现
 
 ## 🖥️ 系统要求
 
