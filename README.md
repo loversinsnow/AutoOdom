@@ -1,3 +1,159 @@
+# AutoOdom Paper Reproduction
+
+## 🖥️ System Requirements
+
+* **Operating System**: Ubuntu 22.04
+
+## ⚙️ Software & Environment Setup
+
+1. **Install Conda**
+   It is recommended to install Anaconda or Miniconda for Python virtual environment management.
+
+2. **Install Isaac Sim and Isaac Lab**
+   Follow the [Isaac Lab official documentation](https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/pip_installation.html) to install the Python version of Isaac Sim and Isaac Lab (Python version = 3.11).
+
+3. **Clone the AutoOdom Repository**
+   ```bash
+   git clone https://github.com/DOGOGOD/AutoOdom.git
+   ```
+
+---
+
+## 🚀 Locomotion Policy Training
+
+### Training
+
+```bash
+cd ~/AutoOdom/robot_lab
+conda activate <your_env_name>
+python scripts/reinforcement_learning/rsl_rl/train.py --task=<TASK_NAME> --headless
+```
+
+> **💡 Notes:**
+> * **Getting TASK_NAME**: Run `/AutoOdom/robot_lab/scripts/tools/list_envs.py` to view all available task names.
+> * **Headless mode**: The `--headless` flag runs training without visualization. Recommended for long training runs to improve efficiency.
+> * **More options**: See `scripts/reinforcement_learning/rsl_rl/train.py` for detailed parameter configuration.
+
+**Logs & Weights:**
+Trained weight files are saved by default to `/home/dogogod/AutoOdom/robot_lab/logs` (note: this is the original author's path — please verify the actual output path on your local machine).
+
+### About the MagicBot Z1 Robot
+
+For MagicBot Z1, the official Magic Lab is typically used. Although this repository provides a `magic_rl_lab` repo compatible with Isaac Sim and Isaac Lab, **it is not the recommended first choice** (path-matching errors may occur).
+
+* If you choose to use it, refer to the `README.md` inside the `magic_rl_lab` directory to install dependencies.
+* **Note**: Pre-trained locomotion policies for both **Booster T1 (robot_lab)** and **MagicBot Z1 (magic_rl_lab)** are already included — you can use them directly.
+
+---
+
+## 📂 Simulation Motion Data Collection
+
+### Example: Booster T1 Robot
+
+**1. Manual Data Collection**
+
+```bash
+conda activate <your_env_name>
+python AutoOdom/robot_lab/BoosterT1AutoOdom/DataCollect.py
+```
+
+**2. Automated Batch Collection via Runner Script**
+
+```bash
+conda activate <your_env_name>
+python AutoOdom/robot_lab/BoosterT1AutoOdom/Runner.py
+```
+
+> **Note**: Collected data files are stored in `.npz` format under the `BoosterT1AutoOdom` directory.
+
+---
+
+## 🧠 Stage 1 Pre-Training
+
+### Example: Booster T1 Robot
+
+**1. Start Training**
+
+```bash
+conda activate <your_env_name>
+python AutoOdom/robot_lab/BoosterT1AutoOdom/Train.py
+```
+
+After training, the program generates a training curve plot in the `BoosterT1AutoOdom` directory. If results are unsatisfactory, adjust training parameters or modify the model architecture.
+
+**2. Visualization & Validation**
+A visualization script is provided. It randomly selects 5 data files, runs trajectory inference using the trained weights, and plots a comparison between ground-truth and inferred trajectories.
+
+```bash
+conda activate <your_env_name>
+python AutoOdom/robot_lab/BoosterT1AutoOdom/Visualize.py
+```
+
+**3. Pre-Trained Models**
+Several pre-trained models are included in the repository for testing. Since performance may vary depending on multiple factors, re-training with adjusted parameters is recommended if results are not satisfactory.
+
+> **MagicBot Z1 Note**:
+> Training scripts, data collection programs, and pre-trained weights for MagicBot Z1 are also provided, located under `magic_rl_lab`. Usage is similar to Booster T1 — refer to the workflow above.
+
+---
+
+## 🤖 Real-World Motion Data Collection
+
+### Example: Booster T1 Robot
+
+#### 1. Software Installation & Environment Setup
+
+```bash
+# Install SDK
+cd AutoOdom/sdk_release
+sudo ./install.sh
+
+# Install ROS2
+wget http://fishros.com/install -O fishros && . fishros
+
+# Install booster_ros2_interface
+cd AutoOdom/booster_robotics_sdk_ros2/booster_ros2_interface
+colcon build
+```
+
+#### 2. Collect Motion Data
+
+**Step A: Connect the Robot**
+Connect to the Booster T1 robot via a wired connection. Refer to the [Booster T1 official manual](https://booster.feishu.cn/wiki/H2Dowdnokij7p8ks9K3cZPuJnOg) for detailed instructions.
+
+**Step B: Run the Data Collection Program**
+
+```bash
+source /opt/ros/<distro>/setup.bash
+source booster_robotics_sdk_ros2/install/setup.bash
+python3 booster_robotics_sdk_ros2/booster_ros2_example/low_level/scripts/data_collector.py
+```
+
+> Data output location: `AutoOdom/booster_robotics_sdk_ros2/data_output`
+
+#### 3. Stage 1 Model Preliminary Validation
+
+**Step A: Prepare Data**
+Copy the real-world data collected in the previous step to the `AutoOdom/robot_lab/RealData` directory.
+
+**Step B: Run the Validation Program**
+
+```bash
+conda activate <your_env_name>
+python AutoOdom/robot_lab/BoosterT1AutoOdom/Stage1Check.py
+```
+
+The inferred trajectory comparison plots will be saved to the `AutoOdom/robot_lab/BoosterT1AutoOdom` folder.
+
+---
+
+## 🏗️ Future Goals
+
+* [ ] Collect a sufficient volume of data samples
+* [ ] Apply autoregressive training on real-world motion data
+* [ ] Tune model training parameters to improve generalization and inference accuracy
+
+
 # AutoOdom 论文复现
 
 ## 🖥️ 系统要求
