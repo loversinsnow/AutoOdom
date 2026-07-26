@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "coordinate_frame": {
+    "origin": "origin_1 pose measured at evaluation startup",
+    "x_axis": "origin_1 Go2 forward direction",
+    "y_axis": "origin_1 Go2 left direction",
+    "position_unit": "m",
+    "orientation_unit": "rad"
+  },
+  "origins": {
+    "origin_1": {
+      "relative_pose": {
+        "position_m": [
+          0.0,
+          0.0
+        ],
+        "yaw_rad": 0.0
+      }
+    },
+    "origin_2": {
+      "relative_pose": {
+        "position_m": [
+          -0.25789572431683455,
+          1.9741621243266958
+        ],
+        "yaw_rad": 0.045957122606994805
+      }
+    }
+  }
+}
