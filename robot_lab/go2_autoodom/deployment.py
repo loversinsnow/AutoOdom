@@ -18,6 +18,7 @@ from .constants import (
     LOCOMOTION_POLICY_OBS_DIM,
     SAMPLE_DT,
 )
+from .policy_quality import MAX_RAW_POLICY_ACTION
 
 
 def deployment_manifest(policy_file: str = "policy.pt") -> dict[str, object]:
@@ -34,7 +35,9 @@ def deployment_manifest(policy_file: str = "policy.pt") -> dict[str, object]:
         "action_scale": GO2_ACTION_SCALE.tolist(),
         "p_gains": GO2_P_GAINS.tolist(),
         "d_gains": GO2_D_GAINS.tolist(),
-        "action_clip": [-1.0, 1.0],
+        "action_clip": None,
+        "raw_action_safety_limit": MAX_RAW_POLICY_ACTION,
+        "target_safety": "joint_position_and_pd_torque_limits",
         "command_limits": {
             "lin_vel_x": [-1.0, 1.0],
             "lin_vel_y": [-1.0, 1.0],

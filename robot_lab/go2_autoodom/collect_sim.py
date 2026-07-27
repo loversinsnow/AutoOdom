@@ -64,6 +64,7 @@ from isaaclab_tasks.utils.parse_cfg import load_cfg_from_registry
 
 from . import isaaclab_task  # noqa: F401, E402
 from .data import save_trajectory
+from .policy_quality import validate_policy_actions
 
 
 def _next_path(directory: Path) -> Path:
@@ -144,8 +145,10 @@ def main() -> None:
             print(f"[INFO] Collecting trajectory {trajectory_index + 1}/{args.num_trajectories}: {args.steps} samples")
 
             while len(log["joint_pos"]) < args.steps:
-                actions = torch.clamp(policy(observation), -1.0, 1.0)
-                observation, _, dones, _ = env.step(actions)
+                raw_actions = policy(observation)
+                validate_policy_actions(raw_actions, context=f"Locomotion checkpoint {checkpoint.name}")
+                actions = raw_actions
+                observation, _, dones, extras = env.step(actions)
                 current_root = robot.data.root_pos_w
                 rotations = matrix_from_quat(robot.data.root_quat_w)
                 jump = torch.linalg.vector_norm(current_root - previous_root, dim=1) > 0.5
@@ -162,9 +165,18 @@ def main() -> None:
                     if not bool(torch.any(dones)):
                         observation, _ = env.reset()
                     previous_root = robot.data.root_pos_w.clone()
+                    termination_log = extras.get("log", {}) if isinstance(extras, dict) else {}
+                    termination_reasons = [
+                        key.removeprefix("Episode_Termination/")
+                        for key, value in termination_log.items()
+                        if key.startswith("Episode_Termination/") and float(value) > 0.0
+                    ]
+                    if not termination_reasons and bool(torch.any(jump)):
+                        termination_reasons.append("position_jump")
+                    reason = ",".join(termination_reasons) if termination_reasons else "unknown"
                     print(
                         f"[WARN] Restarting trajectory {trajectory_index + 1}/{args.num_trajectories} "
-                        f"after a reset/discontinuity; discarded {discarded} samples "
+                        f"after {reason}; discarded {discarded} samples "
                         f"({restart_count}/{args.max_restarts})"
                     )
                     continue

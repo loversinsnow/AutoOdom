@@ -29,6 +29,10 @@ Isaac Sim policy training and simulation collection require a working NVIDIA GPU
 ### 1. Train and export the Go2 locomotion policy
 
 The task `AutoOdom-Isaac-Velocity-Flat-Unitree-Go2-v0` removes privileged base linear velocity, uses the canonical 12-joint deployment order, runs at 50 Hz, and applies action scales `0.125` to hips and `0.25` to thigh/calf joints.
+PPO, collection, and deployment all preserve the same raw Gaussian action contract so action-rate and physical
+penalties can prevent policy variance from diverging. Deployment enforces joint-position and `23.5 N·m` PD-torque
+limits instead of changing the policy action with an unrelated unit clip. A preflight rejects grossly divergent raw
+policy outputs before export or execution.
 
 ```bash
 python -m go2_autoodom.train_policy \

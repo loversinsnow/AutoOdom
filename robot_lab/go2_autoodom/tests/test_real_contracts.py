@@ -47,6 +47,7 @@ class JointAndSafetyContractTest(unittest.TestCase):
         self.assertEqual(len(GO2_JOINT_NAMES), 12)
         self.assertEqual(GO2_DDS_MOTOR_INDICES, (3, 0, 9, 6, 4, 1, 10, 7, 5, 2, 11, 8))
         self.assertEqual(len(set(GO2_DDS_MOTOR_INDICES)), 12)
+        np.testing.assert_allclose(GO2_TORQUE_LIMITS, 23.5)
 
     def test_policy_targets_respect_torque_and_joint_limits(self):
         joint_pos = GO2_DEFAULT_JOINT_POS.copy()
@@ -57,6 +58,15 @@ class JointAndSafetyContractTest(unittest.TestCase):
         self.assertTrue(np.all(targets >= GO2_JOINT_LIMIT_LOW))
         self.assertTrue(np.all(targets <= GO2_JOINT_LIMIT_HIGH))
         self.assertTrue(np.isfinite(applied).all())
+        self.assertGreater(float(np.max(applied)), 1.0)
+
+    def test_policy_targets_preserve_safe_raw_actions_outside_unit_range(self):
+        applied, _ = safe_policy_targets(
+            np.full(12, 2.0, dtype=np.float32),
+            GO2_DEFAULT_JOINT_POS.copy(),
+            np.zeros(12, dtype=np.float32),
+        )
+        np.testing.assert_allclose(applied, 2.0, atol=1.0e-6)
 
 
 class RemoteContractTest(unittest.TestCase):
@@ -101,6 +111,58 @@ class PolicyObservationContractTest(unittest.TestCase):
             self.assertEqual(observation.shape, (LOCOMOTION_POLICY_OBS_DIM,))
             np.testing.assert_allclose(policy.act(state, np.zeros(3, dtype=np.float32)), 0.0)
 
+    def test_policy_preserves_raw_action_outside_unit_range(self):
+        class RawPolicy(torch.nn.Module):
+            def forward(self, observation):
+                return torch.full((observation.shape[0], 12), 2.0, dtype=observation.dtype)
+
+        with tempfile.TemporaryDirectory() as directory:
+            directory = Path(directory)
+            traced = torch.jit.trace(RawPolicy(), torch.zeros(1, LOCOMOTION_POLICY_OBS_DIM))
+            traced.save(str(directory / "policy.pt"))
+            manifest = write_deployment_manifest(directory / "deployment.json")
+            policy = Go2LocomotionPolicy(manifest)
+            remote = parse_remote(bytes(24))
+            state = Go2State(
+                joint_pos=GO2_DEFAULT_JOINT_POS.copy(),
+                joint_vel=np.zeros(12, dtype=np.float32),
+                joint_torque=np.zeros(12, dtype=np.float32),
+                gyro=np.zeros(3, dtype=np.float32),
+                acceleration=np.zeros(3, dtype=np.float32),
+                quaternion_wxyz=np.asarray([1.0, 0.0, 0.0, 0.0], dtype=np.float32),
+                rotation=np.eye(3, dtype=np.float32),
+                remote=remote,
+                timestamp=0.0,
+            )
+            np.testing.assert_allclose(policy.act(state, np.zeros(3, dtype=np.float32)), 2.0)
+            np.testing.assert_allclose(policy.previous_action, 2.0)
+
+    def test_degenerate_raw_policy_action_is_rejected_before_target_safety(self):
+        class DivergedPolicy(torch.nn.Module):
+            def forward(self, observation):
+                return torch.full((observation.shape[0], 12), 100.0, dtype=observation.dtype)
+
+        with tempfile.TemporaryDirectory() as directory:
+            directory = Path(directory)
+            traced = torch.jit.trace(DivergedPolicy(), torch.zeros(1, LOCOMOTION_POLICY_OBS_DIM))
+            traced.save(str(directory / "policy.pt"))
+            manifest = write_deployment_manifest(directory / "deployment.json")
+            policy = Go2LocomotionPolicy(manifest)
+            remote = parse_remote(bytes(24))
+            state = Go2State(
+                joint_pos=GO2_DEFAULT_JOINT_POS.copy(),
+                joint_vel=np.zeros(12, dtype=np.float32),
+                joint_torque=np.zeros(12, dtype=np.float32),
+                gyro=np.zeros(3, dtype=np.float32),
+                acceleration=np.zeros(3, dtype=np.float32),
+                quaternion_wxyz=np.asarray([1.0, 0.0, 0.0, 0.0], dtype=np.float32),
+                rotation=np.eye(3, dtype=np.float32),
+                remote=remote,
+                timestamp=0.0,
+            )
+            with self.assertRaisesRegex(RuntimeError, "degenerate raw action"):
+                policy.act(state, np.zeros(3, dtype=np.float32))
+
 
 class MocapContractTest(unittest.TestCase):
     def test_marker_grid_recovers_pose(self):
@@ -115,10 +177,7 @@ class MocapContractTest(unittest.TestCase):
             1: np.asarray([0.00, 0.13, 0.12]),
             6: np.asarray([-0.24, 0.13, 0.12]),
         }
-        raw = {
-            index: MOCAP_TO_WORLD.T @ (origin + rotation @ local)
-            for index, local in local_markers.items()
-        }
+        raw = {index: MOCAP_TO_WORLD.T @ (origin + rotation @ local) for index, local in local_markers.items()}
         pose = compute_go2_pose(raw)
         np.testing.assert_allclose(pose.position, origin, atol=1.0e-6)
         np.testing.assert_allclose(pose.rotation, rotation, atol=1.0e-6)

@@ -45,13 +45,12 @@ def safe_policy_targets(
     joint_pos: np.ndarray,
     joint_vel: np.ndarray,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Apply action, torque, and physical joint limits without touching DDS."""
+    """Map a raw policy action to targets bounded by PD torque and physical joint limits."""
     raw = np.asarray(action, dtype=np.float32).reshape(12)
     joint_pos = np.asarray(joint_pos, dtype=np.float32).reshape(12)
     joint_vel = np.asarray(joint_vel, dtype=np.float32).reshape(12)
     if not np.isfinite(np.concatenate([raw, joint_pos, joint_vel])).all():
         raise ValueError("Policy action and joint state must be finite")
-    raw = np.clip(raw, -1.0, 1.0)
     desired_targets = GO2_DEFAULT_JOINT_POS + raw * GO2_ACTION_SCALE
     torque_target_low = joint_pos + (-GO2_TORQUE_LIMITS + GO2_D_GAINS * joint_vel) / GO2_P_GAINS
     torque_target_high = joint_pos + (GO2_TORQUE_LIMITS + GO2_D_GAINS * joint_vel) / GO2_P_GAINS
@@ -179,17 +178,11 @@ class Go2LowLevelInterface:
         quaternion = np.asarray(imu.quaternion, dtype=np.float32).reshape(4)
         state = Go2State(
             joint_pos=np.asarray(
-                [
-                    message.motor_state[GO2_DDS_MOTOR_INDICES[index]].q * GO2_DDS_SIGNS[index]
-                    for index in range(12)
-                ],
+                [message.motor_state[GO2_DDS_MOTOR_INDICES[index]].q * GO2_DDS_SIGNS[index] for index in range(12)],
                 dtype=np.float32,
             ),
             joint_vel=np.asarray(
-                [
-                    message.motor_state[GO2_DDS_MOTOR_INDICES[index]].dq * GO2_DDS_SIGNS[index]
-                    for index in range(12)
-                ],
+                [message.motor_state[GO2_DDS_MOTOR_INDICES[index]].dq * GO2_DDS_SIGNS[index] for index in range(12)],
                 dtype=np.float32,
             ),
             joint_torque=np.asarray(
@@ -206,9 +199,13 @@ class Go2LowLevelInterface:
             remote=parse_remote(getattr(message, "wireless_remote", [])),
             timestamp=timestamp,
         )
-        values = np.concatenate(
-            [state.joint_pos, state.joint_vel, state.gyro, state.acceleration, state.quaternion_wxyz]
-        )
+        values = np.concatenate([
+            state.joint_pos,
+            state.joint_vel,
+            state.gyro,
+            state.acceleration,
+            state.quaternion_wxyz,
+        ])
         if not np.isfinite(values).all():
             self.motor_off()
             raise RuntimeError("Non-finite value received from Go2 LowState")

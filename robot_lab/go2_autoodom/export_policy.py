@@ -27,6 +27,7 @@ app_launcher = AppLauncher(args)
 simulation_app = app_launcher.app
 
 import gymnasium as gym
+import torch
 from rsl_rl.runners import OnPolicyRunner
 
 from isaaclab_rl.rsl_rl import RslRlVecEnvWrapper, export_policy_as_jit
@@ -36,6 +37,7 @@ from isaaclab_tasks.utils.parse_cfg import load_cfg_from_registry
 from . import isaaclab_task  # noqa: F401, E402
 from .artifacts import exported_dir, update_run_manifest
 from .deployment import write_deployment_manifest
+from .policy_quality import validate_policy_actions
 
 
 def main() -> None:
@@ -52,6 +54,17 @@ def main() -> None:
     wrapped_env = RslRlVecEnvWrapper(env, clip_actions=agent_cfg.clip_actions)
     runner = OnPolicyRunner(wrapped_env, agent_cfg.to_dict(), log_dir=None, device=agent_cfg.device)
     runner.load(str(checkpoint))
+    observations, _ = wrapped_env.get_observations()
+    inference_policy = runner.get_inference_policy(device=agent_cfg.device)
+    with torch.inference_mode():
+        action_stats = validate_policy_actions(
+            inference_policy(observations),
+            context=f"Locomotion checkpoint {checkpoint.name}",
+        )
+    print(
+        f"[INFO] Policy action preflight: max_abs={action_stats.max_abs:.3f}, "
+        f"outside_unit_range={action_stats.outside_unit_range_fraction:.1%}"
+    )
     try:
         policy_module = runner.alg.policy
     except AttributeError:

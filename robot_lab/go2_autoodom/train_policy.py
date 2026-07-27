@@ -25,6 +25,7 @@ app_launcher = AppLauncher(args)
 simulation_app = app_launcher.app
 
 import gymnasium as gym
+import torch
 from rsl_rl.runners import OnPolicyRunner
 
 from isaaclab.utils.io import dump_pickle, dump_yaml
@@ -35,6 +36,7 @@ from isaaclab_tasks.utils.parse_cfg import load_cfg_from_registry
 from . import isaaclab_task  # noqa: F401, E402
 from .artifacts import create_timestamped_run, exported_dir, update_run_manifest
 from .deployment import write_deployment_manifest
+from .policy_quality import validate_policy_actions
 
 
 def main() -> None:
@@ -63,6 +65,18 @@ def main() -> None:
     dump_pickle(str(log_dir / "params" / "env.pkl"), env_cfg)
     dump_pickle(str(log_dir / "params" / "agent.pkl"), agent_cfg)
     runner.learn(num_learning_iterations=agent_cfg.max_iterations, init_at_random_ep_len=True)
+
+    observations, _ = wrapped_env.get_observations()
+    inference_policy = runner.get_inference_policy(device=agent_cfg.device)
+    with torch.inference_mode():
+        action_stats = validate_policy_actions(
+            inference_policy(observations),
+            context="Trained locomotion policy",
+        )
+    print(
+        f"[INFO] Policy action preflight: max_abs={action_stats.max_abs:.3f}, "
+        f"outside_unit_range={action_stats.outside_unit_range_fraction:.1%}"
+    )
 
     try:
         policy_module = runner.alg.policy

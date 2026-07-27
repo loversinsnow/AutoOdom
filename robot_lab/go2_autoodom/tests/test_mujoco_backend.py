@@ -4,7 +4,7 @@ import unittest
 
 import numpy as np
 
-from go2_autoodom.constants import GO2_DEFAULT_JOINT_POS, SAMPLE_DT
+from go2_autoodom.constants import GO2_DEFAULT_JOINT_POS, GO2_TORQUE_LIMITS, SAMPLE_DT
 
 try:
     import mujoco  # noqa: F401
@@ -24,6 +24,10 @@ class MujocoBackendContractTest(unittest.TestCase):
             self.assertEqual(state.joint_vel.shape, (12,))
             self.assertEqual(state.gyro.shape, (3,))
             self.assertEqual(state.acceleration.shape, (3,))
+            np.testing.assert_allclose(
+                backend.model.actuator_ctrlrange[backend.actuator_ids],
+                np.column_stack([-GO2_TORQUE_LIMITS, GO2_TORQUE_LIMITS]),
+            )
             applied = backend.apply_action(np.zeros(12, dtype=np.float32), state)
             self.assertEqual(applied.shape, (12,))
             self.assertAlmostEqual(backend.true_pose().timestamp, SAMPLE_DT, places=6)
@@ -33,4 +37,3 @@ class MujocoBackendContractTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

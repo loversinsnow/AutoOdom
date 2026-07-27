@@ -34,7 +34,10 @@ def _apply_autoodom_go2_contract(config: UnitreeGo2FlatEnvCfg) -> None:
         ".*_hip_joint": 0.125,
         ".*_(thigh|calf)_joint": 0.25,
     }
-    config.actions.joint_pos.clip = {".*": (-1.0, 1.0)}
+    # RSL-RL must train against its raw sampled action so action-rate and
+    # physical penalties can discourage divergence. Deployment preserves that
+    # raw action contract while enforcing torque and joint-position limits.
+    config.actions.joint_pos.clip = None
     config.actions.joint_pos.use_default_offset = True
 
     # 200 Hz physics with decimation 4 gives the shared 50 Hz control/data rate.

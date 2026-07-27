@@ -23,6 +23,7 @@ class FakePolicy:
     def act(self, state, command):
         action = np.zeros(12, dtype=np.float32)
         action[:2] = command[:2]
+        self.previous_action = action.copy()
         return action
 
 
@@ -39,6 +40,16 @@ class FakeEstimator:
     def update(self, **_):
         self.world_position += self.step_world
         return self.step_world.copy(), self.world_position.copy()
+
+
+class RecordingEstimator(FakeEstimator):
+    def __init__(self):
+        super().__init__()
+        self.joint_commands = []
+
+    def update(self, **inputs):
+        self.joint_commands.append(np.asarray(inputs["joint_commands"], dtype=np.float32).copy())
+        return super().update(**inputs)
 
 
 class FakeBackend:
@@ -69,6 +80,12 @@ class FakeBackend:
         self.position += self.true_step
         self.time += self.control_dt
         return np.asarray(action, dtype=np.float32).reshape(12)
+
+
+class LimitingBackend(FakeBackend):
+    def apply_action(self, action, state):
+        super().apply_action(action, state)
+        return np.zeros(12, dtype=np.float32)
 
 
 class ClosedLoopEvaluationTest(unittest.TestCase):
@@ -112,7 +129,18 @@ class ClosedLoopEvaluationTest(unittest.TestCase):
             self.assertTrue(result["success"])
             self.assertEqual(result["steps"], 1)
 
+    def test_estimator_receives_raw_policy_action_not_limited_backend_target(self):
+        with tempfile.TemporaryDirectory() as directory:
+            estimator = RecordingEstimator()
+            evaluator = self._evaluator(Path(directory), LimitingBackend(), estimator)
+            evaluator._run_command(
+                EvalCommand(1, np.asarray([0.5, 0.0], dtype=np.float32)),
+                1,
+                "origin_1",
+            )
+            np.testing.assert_allclose(estimator.joint_commands[0], 0.0)
+            self.assertGreater(float(estimator.joint_commands[1][0]), 0.0)
+
 
 if __name__ == "__main__":
     unittest.main()
-

@@ -42,7 +42,8 @@ GO2_JOINT_LIMIT_HIGH = np.asarray(
     [1.0472] * 4 + [3.4907, 3.4907, 4.5379, 4.5379] + [-0.83776] * 4,
     dtype=np.float32,
 )
-GO2_TORQUE_LIMITS = np.asarray([23.7] * 8 + [45.43] * 4, dtype=np.float32)
+# Match Isaac Lab 2.1's UNITREE_GO2_CFG DCMotor effort/saturation limit.
+GO2_TORQUE_LIMITS = np.full(12, 23.5, dtype=np.float32)
 
 SAMPLE_DT = 0.02
 HISTORY_LENGTH = 50

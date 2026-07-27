@@ -14,4 +14,7 @@ class AutoOdomGo2FlatPPORunnerCfg(UnitreeGo2FlatPPORunnerCfg):
         self.max_iterations = 1500
         self.save_interval = 50
         self.seed = 42
-        self.clip_actions = 1.0
+        # Do not hide the sampled Gaussian actions from the environment/reward
+        # terms. Clipping here lets PPO increase its entropy indefinitely while
+        # every large action has the same effect after clipping.
+        self.clip_actions = None

@@ -135,8 +135,7 @@ def main() -> None:
             action = policy.act(state, command)
             if time.monotonic() - policy_start > 0.10:
                 raise TimeoutError("Locomotion policy inference timeout")
-            applied_action = controller.send_policy_action(action, state)
-            policy.previous_action = applied_action.copy()
+            controller.send_policy_action(action, state)
             pose = mocap.sample()
             if previous_pose is None:
                 increment = np.zeros(3, dtype=np.float32)
@@ -148,7 +147,7 @@ def main() -> None:
 
             log["joint_pos"].append(state.joint_pos)
             log["joint_vel"].append(state.joint_vel)
-            log["joint_commands"].append(applied_action)
+            log["joint_commands"].append(action)
             log["gyro_ang_vel"].append(state.gyro)
             log["imu_lin_acc"].append(state.acceleration)
             log["base_rot_mat"].append(state.rotation)
@@ -156,16 +155,14 @@ def main() -> None:
             log["cmd_vel"].append(command)
             log["pos_increment_hist"].append(increment)
             log["root_pos_abs"].append(pose.position)
-            twist = np.concatenate(
-                [
-                    pose.linear_velocity_world
-                    if pose.linear_velocity_world is not None
-                    else np.full(3, np.nan, dtype=np.float32),
-                    pose.angular_velocity_world
-                    if pose.angular_velocity_world is not None
-                    else np.full(3, np.nan, dtype=np.float32),
-                ]
-            )
+            twist = np.concatenate([
+                pose.linear_velocity_world
+                if pose.linear_velocity_world is not None
+                else np.full(3, np.nan, dtype=np.float32),
+                pose.angular_velocity_world
+                if pose.angular_velocity_world is not None
+                else np.full(3, np.nan, dtype=np.float32),
+            ])
             log["mocap_twist_world"].append(twist)
 
             if estimator is not None:
@@ -174,7 +171,7 @@ def main() -> None:
                     joint_vel=state.joint_vel,
                     gyro_ang_vel=state.gyro,
                     base_rot_mat=state.rotation,
-                    joint_commands=applied_action,
+                    joint_commands=action,
                     imu_lin_acc=state.acceleration,
                 )
                 if len(log["joint_pos"]) % 50 == 0:

@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import math
+from collections.abc import Sequence
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Protocol, Sequence
+from typing import Protocol
 
 import numpy as np
 
@@ -167,16 +168,13 @@ class CommandEvaluator:
         self.origin2_relative_pose = np.asarray(origin2_relative_pose, dtype=np.float32).reshape(3)
         self.config = config or EvaluationConfig()
         if not np.isclose(float(self.backend.control_dt), SAMPLE_DT):
-            raise ValueError(
-                f"Evaluation backend must run at {SAMPLE_DT:.2f}s, got {self.backend.control_dt}"
-            )
+            raise ValueError(f"Evaluation backend must run at {SAMPLE_DT:.2f}s, got {self.backend.control_dt}")
 
     def _policy_step(self, command: np.ndarray) -> tuple[Go2State, np.ndarray]:
         state = self.backend.read_state()
         action = self.policy.act(state, command)
-        applied = self.backend.apply_action(action, state)
-        self.policy.previous_action = applied.copy()
-        return state, applied
+        self.backend.apply_action(action, state)
+        return state, action
 
     def _settle_with_zero_command(self) -> None:
         self.policy.reset()
@@ -297,27 +295,22 @@ class CommandEvaluator:
             if success or step == max_steps:
                 terminal_pose = pose
                 stop_action = self.policy.act(state, np.zeros(3, dtype=np.float32))
-                stopped_action = self.backend.apply_action(stop_action, state)
-                self.policy.previous_action = stopped_action.copy()
+                self.backend.apply_action(stop_action, state)
                 break
             action = self.policy.act(state, velocity_command)
-            previous_action = self.backend.apply_action(action, state)
-            self.policy.previous_action = previous_action.copy()
+            self.backend.apply_action(action, state)
+            previous_action = action.copy()
             steps += 1
 
         if terminal_pose is None:
             raise RuntimeError("Evaluation command ended without a terminal pose")
         final_pose = terminal_pose
         estimated_world = np.asarray(trace["estimated_position"][-1], dtype=np.float32)
-        true_local = horizontal_basis(start_pose.rotation).T @ (
-            final_pose.position[:2] - start_pose.position[:2]
-        )
+        true_local = horizontal_basis(start_pose.rotation).T @ (final_pose.position[:2] - start_pose.position[:2])
         estimated_local = horizontal_basis(start_state.rotation).T @ estimated_world[:2]
         true_positions = np.asarray(trace["true_position"], dtype=np.float32)
         true_path_length = float(
-            np.linalg.norm(np.diff(true_positions[:, :2], axis=0), axis=1).sum()
-            if len(true_positions) > 1
-            else 0.0
+            np.linalg.norm(np.diff(true_positions[:, :2], axis=0), axis=1).sum() if len(true_positions) > 1 else 0.0
         )
         trajectory_path = self.trajectory_dir / f"command_{command_number:03d}.npz"
         np.savez_compressed(
@@ -361,9 +354,7 @@ class CommandEvaluator:
             "success_rate": successes / completed if completed else 0.0,
             "mean_final_true_distance_m": float(np.mean(final_distances)) if final_distances else None,
             "mean_odometry_endpoint_error_m": float(np.mean(odometry_errors)) if odometry_errors else None,
-            "total_commanded_distance_m": float(
-                sum(np.linalg.norm(result["target_local_xy"]) for result in results)
-            ),
+            "total_commanded_distance_m": float(sum(np.linalg.norm(result["target_local_xy"]) for result in results)),
             "total_true_path_length_m": float(sum(float(result["true_path_length_m"]) for result in results)),
             "aborted": aborted_reason is not None,
             "aborted_reason": aborted_reason,
